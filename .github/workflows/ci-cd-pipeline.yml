@@ -1,7 +1,10 @@
-name: Full Stack CI/CD
+name: CI/CD Pipeline
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
 
@@ -16,9 +19,14 @@ jobs:
         with:
           python-version: '3.9'
       - name: Install dependencies
-        run: pip install -r backend/requirements.txt
-      - name: Run Backend Tests
-        run: pytest backend/tests
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+      - name: Run tests
+        run: |
+          source venv/bin/activate
+          pytest
 
   frontend:
     runs-on: ubuntu-latest
@@ -31,5 +39,5 @@ jobs:
           flutter-version: 'stable'
       - name: Install dependencies
         run: flutter pub get
-      - name: Run Frontend Tests
+      - name: Run tests
         run: flutter test
